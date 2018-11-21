@@ -1,87 +1,87 @@
-//listening event for document
 $(document).ready(function(){
-    //array to hold buttons
-    var displayButton = ["crying", "laughing", "mad", "sad", "hyper"];
 
-    //function to display images, with attributes and limiting to 10
-    function imageDisplay () {
-    $('#gifThumbs').empty();
-    var input = $(this).attr("data-name");
-    var limit = 10;
-    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=&q=" + input + "&limit=" + limit + "Tqp0qVsBVht4kSu14ps63GCZLkSx28Al";
+    var displayedButtons = ["Crying", "Sad", "Happy", "Hyper"];
 
+    function displayImg(){
+
+        $("#display-images").empty();
+        var input = $(this).attr("data-name");
+        var limit = 10;
+        var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + input + "&limit=" + limit + "&api_key=dc6zaTOxFJmzC";   
+
+        $.ajax({
+            url: queryURL, 
+            method: "GET"
+        }).done(function(response) {
+
+            for(var j = 0; j < limit; j++) {    
+
+                var displayDiv = $("<div>");
+                displayDiv.addClass("holder");
+            
+                var image = $("<img>");
+                image.attr("src", response.data[j].images.original_still.url);
+                image.attr("data-still", response.data[j].images.original_still.url);
+                image.attr("data-animate", response.data[j].images.original.url);
+                image.attr("data-state", "still");
+                image.attr("class", "gif");
+                displayDiv.append(image);
+
+                var rating = response.data[j].rating;
+                console.log(response);
+                var pRating = $("<p>").text("Rating: " + rating);
+                displayDiv.append(pRating)
+
+                $("#display-images").append(displayDiv);
+            }
+        });
     }
-    //send out ajax call
-    $.ajax({
-        url: queryURL;
-        method: "GET"
-    }).then(function(response){
 
-        //creating loop for grabbing giphy info
-        for (var i = 0; i < limit; i++) {
+    function renderButtons(){ 
 
-            var image = $("<img>");
-            image.attr("src", response.data[i].images.original_still.url);
-            image.attr("data-still", response.data[i].images.original_still.url);
-            image.attr("data-animate", response.data[i],images.original.url);
-            image.attr("data-state", "still");
-            image.attr("class", "gif");
+        $("#display-buttons").empty();
 
-         //creating p tag to grab rating
-         var rating = response.data[i].rating;
-         var pRating = $("<p>").text("Rating: " + rating);
-         displayDiv.append(pRating);
+        for (var i = 0; i < displayedButtons.length; i++){
 
-         $("#gifThumbs").append(displayDiv);
-        }
-
-    })
-
-    //function to create buttons and give attributes (some classes given for bootstrap styling). Inputs will be stored in displayButton var
-    function makeButtons() {
-        $("#buttons").empty();
-
-        for(var j = 0; j < displayButton.length; j++) {
-            var newButton = $("<button>");
+            var newButton = $("<button>") 
             newButton.attr("class", "btn btn-default");
-            newButton.attr("id", "input");
-            newButton.attr("data-name", displayButton[i]);
-            newButton.text(displayButton[i]);
-            $("#buttons").append(newButton);
+            newButton.attr("id", "input")  
+            newButton.attr("data-name", displayedButtons[i]); 
+            newButton.text(displayedButtons[i]); 
+            $("#display-buttons").append(newButton); 
         }
     }
 
-    //create function for click event to animate. This will change the state of the images defined in lines 21-26
+    function imageChangeState() {          
 
-    function animateThis () {
         var state = $(this).attr("data-state");
-        var animateGif = $(this).attr("data-animate");
-        var stillGif = $(this).attr("data=still");
+        var animateImage = $(this).attr("data-animate");
+        var stillImage = $(this).attr("data-still");
 
         if(state == "still") {
-            $(this).attr("src", animateGif);
+            $(this).attr("src", animateImage);
             $(this).attr("data-state", "animate");
-        } else if (state == "animate") {
-            $(this).attr("src", stillGif);
-            $(this).attr("data-state", "still");
         }
 
+        else if(state == "animate") {
+            $(this).attr("src", stillImage);
+            $(this).attr("data-state", "still");
+        }   
     }
-    //click function for user input
-    $("#submitPress").on("click", function() {
-        
-        var input = $("user-input").val().trim();
-        form.reset();
-        displayButton.push(input);
 
-        makeButtons();
+    $("#submitPress").on("click", function(){
+
+        var input = $("#user-input").val().trim();
+        form.reset();
+        displayedButtons.push(input);
+                
+        renderButtons();
+
+        return false;
     })
 
-    makeButtons();
-    //click events that animate the gifs when clicked, changing class or id from attributes from lines 56-69.
+    renderButtons();
 
-    $(document).on("click", "#input", imageDisplay);
-    $(document).on("click", ".gif", animateThis);
-
-
+    $(document).on("click", "#input", displayImg);
+    $(document).on("click", ".gif", imageChangeState);
 });
