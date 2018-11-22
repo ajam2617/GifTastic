@@ -1,0 +1,21 @@
+body {
+    background-color: aquamarine;
+}
+
+.jumbotron {
+    text-align: center;
+    font-family: 'Black Han Sans', serif;
+    background-color: darkblue;
+    color: yellow;
+    
+}
+
+.jumbotron:hover {
+    background-color: blueviolet;
+    color: darkorange;
+}
+
+#display-buttons {
+    padding: 15px;
+    
+}

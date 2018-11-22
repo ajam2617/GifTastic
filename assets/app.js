@@ -44,7 +44,7 @@ $(document).ready(function(){
         for (var i = 0; i < displayedButtons.length; i++){
 
             var newButton = $("<button>") 
-            newButton.attr("class", "btn btn-default");
+            newButton.attr("class", "btn btn-secondary btn-lg");
             newButton.attr("id", "input")  
             newButton.attr("data-name", displayedButtons[i]); 
             newButton.text(displayedButtons[i]); 
